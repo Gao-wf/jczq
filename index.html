@@ -80,6 +80,15 @@
   .legend{font-size:11px;color:var(--sub);margin-top:8px;line-height:1.7}
   .empty{text-align:center;color:var(--sub);padding:30px;font-size:13px}
 
+  /* 联赛下拉筛选 */
+  .lsel{border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:13px;background:#fff;color:var(--txt);max-width:170px}
+  .lsel:focus{border-color:var(--blue);outline:none}
+
+  .hint-banner{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff8ec;border:1px solid #f3d9a0;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px;color:#8a5a00}
+  .hint-banner b{color:#b87400}
+  .hint-banner button{flex:none;border:none;background:var(--blue);color:#fff;border-radius:8px;padding:6px 12px;font-size:13px;font-weight:700;cursor:pointer}
+  .hint-banner button:hover{filter:brightness(1.05)}
+
   /* 设置弹窗 */
   .modal-mask{position:fixed;inset:0;background:rgba(20,28,45,.4);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
   .modal-mask.open{display:flex}
@@ -113,7 +122,10 @@
     <button class="qbtn" data-d="-1">昨天</button>
     <button class="qbtn" data-d="0">今天</button>
     <button class="qbtn" data-d="1">明天</button>
+    <select id="leagueSel" class="lsel"></select>
   </div>
+
+  <div class="hint-banner" id="hintBanner" style="display:none"></div>
 
   <div class="stats" id="stats"></div>
   <div class="predbar" id="predBar"></div>
@@ -121,12 +133,14 @@
   <div id="matchList"></div>
 
   <footer>
-    盘口来源：<b>36*（Bet365）</b> 亚盘 / 大小球。已结束比赛显示「初盘 + 终盘」，进行中显示「初盘 + 即时盘」，未开赛仅显示「初盘」。<br>
+    比赛：默认接 <b>ESPN 真实赛程</b>（无需注册、浏览器可跨域），显示<b>当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛）。<br>
+    注意：ESPN 免费接口<b>不提供「韩K」「欧协联」</b>，这两项仅在示例/演示模式下可见；真实模式选它们会提示无数据（后续接其他源再补）。<br>
+    盘口：当前为<b>示例盘口（标注“示例”）</b>；真实 Bet365（36*）亚盘/大小球需付费赔率接口，到时再接。<br>
     每张比赛卡下方有 <b>3 个预测比分框</b>（可留空）和 <b>实际比分框</b>：第二天把真实结果填进「实际比分」，网页自动核对 3 个预测是否命中。<br>
     盘路颜色：<span style="color:var(--red);font-weight:700">红=赢盘</span> /
     <span style="color:var(--green);font-weight:700">绿=输盘</span> /
     <span style="color:var(--gray);font-weight:700">灰=走盘</span>（含赢半/输半）。<br>
-    真实数据接口已预留，在「⚙ 数据源」填入 API key 即可切换（见源码 <code>fetchRealMatches</code>）。
+    在「⚙ 数据源」可切换 ESPN / 示例 / API-Football；顶部「联赛」下拉可筛选，含「竞彩常用」「国家队」预设。
   </footer>
 </div>
 
@@ -137,18 +151,21 @@
     <div class="field">
       <label>数据源</label>
       <select id="setProvider">
-        <option value="demo">示例数据（本地生成，立即可用）</option>
-        <option value="apifootball">API-Football（含 Bet365 盘口，需 key）</option>
+        <option value="espn">ESPN 真实赛程（无需注册，推荐）</option>
+        <option value="demo">示例数据（本地生成，离线可用）</option>
+        <option value="apifootball">API-Football（需 key，潜力接盘口）</option>
       </select>
     </div>
     <div class="field">
-      <label>API Key（选真实源时填写）</label>
+      <label>API Key（仅选 API-Football 时填写）</label>
       <input type="text" id="setKey" placeholder="粘贴你的 API-Football key">
     </div>
     <div class="hint">
-      说明：示例模式下盘口/赛果为本地生成的演示数据，盘路计算逻辑与真实一致。<br>
-      接入真实数据时，Bet365 亚盘/大小球需通过支持该书商的赔率 API（如 API-Football 的 odds 接口，bookmaker=“Bet365”），
-      并在可联网/CORS 的环境（或自建代理）下运行。源码 <code>fetchRealMatches()</code> 已写好映射骨架，填 key 即生效。
+      <b>ESPN 真实赛程（默认·免注册）</b>：直接拉取<b>当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛），自动出赛果，彻底解决“不是今天比赛”的问题。无需账号、浏览器可跨域调用。<br>
+      <b>盘口说明</b>：ESPN 提供的是赛程而非 Bet365 盘口，所以盘口目前仍显示<b>示例盘口（标注“示例”）</b>；要真实 36*(Bet365) 亚盘/大小球需付费赔率接口（如 API-Football 付费档），到时我再接。<br>
+      <b>韩K / 欧协联</b>：ESPN 免费接口不提供这两项，仅演示模式可见；真实模式若选它们会提示无数据。<br>
+      若手机/电脑离线或接口异常，会自动回退示例数据。<br>
+      页面顶部「<b>联赛</b>」下拉可筛选指定联赛或预设（<b>竞彩常用</b> / <b>国家队</b>），选「全部联赛」显示所有比赛。筛选在真实赛程与示例数据下均生效。
     </div>
     <div class="actions">
       <button class="btn ghost" id="btnCancel">取消</button>
@@ -179,19 +196,163 @@ function pick(rng,arr){return arr[Math.floor(rng()*arr.length)];}
 function r2(n){return Math.round(n*100)/100;}
 
 /* ---------- 球队库 ---------- */
+const COUNTRIES=['法国','西班牙','德国','意大利','英格兰','葡萄牙','荷兰','比利时','巴西','阿根廷','克罗地亚','乌拉圭','日本','韩国','中国','美国','墨西哥','摩洛哥','塞内加尔','丹麦','瑞典','瑞士','奥地利','波兰','土耳其'];
+// ESPN 真实数据中“国家队赛事”的队名为英文，这里做英→中翻译（覆盖各洲主要国家队）
+const NATION_ZH={
+ 'england':'英格兰','scotland':'苏格兰','wales':'威尔士','northern ireland':'北爱尔兰','republic of ireland':'爱尔兰',
+ 'france':'法国','germany':'德国','italy':'意大利','spain':'西班牙','portugal':'葡萄牙','netherlands':'荷兰',
+ 'belgium':'比利时','croatia':'克罗地亚','serbia':'塞尔维亚','switzerland':'瑞士','austria':'奥地利',
+ 'poland':'波兰','ukraine':'乌克兰','czech republic':'捷克','slovakia':'斯洛伐克','hungary':'匈牙利',
+ 'romania':'罗马尼亚','sweden':'瑞典','denmark':'丹麦','norway':'挪威','finland':'芬兰','iceland':'冰岛',
+ 'greece':'希腊','turkey':'土耳其','russia':'俄罗斯','slovenia':'斯洛文尼亚','bulgaria':'保加利亚',
+ 'georgia':'格鲁吉亚','albania':'阿尔巴尼亚','montenegro':'黑山','north macedonia':'北马其顿',
+ 'bosnia and herzegovina':'波黑','kosovo':'科索沃','luxembourg':'卢森堡','belarus':'白俄罗斯',
+ 'armenia':'亚美尼亚','kazakhstan':'哈萨克斯坦','israel':'以色列','liechtenstein':'列支敦士登',
+ 'cyprus':'塞浦路斯','malta':'马耳他','faroe islands':'法罗群岛','lithuania':'立陶宛','latvia':'拉脱维亚',
+ 'estonia':'爱沙尼亚','moldova':'摩尔多瓦','azerbaijan':'阿塞拜疆',
+ 'brazil':'巴西','argentina':'阿根廷','uruguay':'乌拉圭','chile':'智利','colombia':'哥伦比亚',
+ 'peru':'秘鲁','ecuador':'厄瓜多尔','paraguay':'巴拉圭','bolivia':'玻利维亚','venezuela':'委内瑞拉',
+ 'mexico':'墨西哥','usa':'美国','united states':'美国','canada':'加拿大','costa rica':'哥斯达黎加',
+ 'panama':'巴拿马','jamaica':'牙买加','honduras':'洪都拉斯','el salvador':'萨尔瓦多','haiti':'海地',
+ 'cuba':'古巴','trinidad and tobago':'特立尼达和多巴哥',
+ 'morocco':'摩洛哥','senegal':'塞内加尔','egypt':'埃及','nigeria':'尼日利亚','algeria':'阿尔及利亚',
+ 'tunisia':'突尼斯','cameroon':'喀麦隆','ghana':'加纳','ivory coast':'科特迪瓦','mali':'马里',
+ 'south africa':'南非','dr congo':'刚果(金)','guinea':'几内亚','burkina faso':'布基纳法索','gabon':'加蓬',
+ 'zambia':'赞比亚','cape verde':'佛得角','angola':'安哥拉','congo':'刚果(布)','benin':'贝宁','libya':'利比亚',
+ 'kenya':'肯尼亚','ethiopia':'埃塞俄比亚','uganda':'乌干达','zimbabwe':'津巴布韦','mozambique':'莫桑比克',
+ 'tanzania':'坦桑尼亚','sudan':'苏丹','namibia':'纳米比亚','botswana':'博茨瓦纳','sierra leone':'塞拉利昂',
+ 'togo':'多哥','niger':'尼日尔','malawi':'马拉维','rwanda':'卢旺达','guinea-bissau':'几内亚比绍',
+ 'equatorial guinea':'赤道几内亚','south sudan':'南苏丹','mauritania':'毛里塔尼亚','comoros':'科摩罗',
+ 'central african republic':'中非','lesotho':'莱索托','eswatini':'斯威士兰','chad':'乍得','seychelles':'塞舌尔',
+ 'san marino':'圣马力诺','andorra':'安道尔','gibraltar':'直布罗陀','malta':'马耳他',
+ 'madagascar':'马达加斯加','burundi':'布隆迪',
+ 'japan':'日本','south korea':'韩国','korea republic':'韩国','korea dpr':'朝鲜','north korea':'朝鲜',
+ 'china pr':'中国','china':'中国','australia':'澳大利亚','iran':'伊朗','saudi arabia':'沙特阿拉伯',
+ 'qatar':'卡塔尔','iraq':'伊拉克','united arab emirates':'阿联酋','uzbekistan':'乌兹别克斯坦','vietnam':'越南',
+ 'thailand':'泰国','indonesia':'印尼','syria':'叙利亚','oman':'阿曼','jordan':'约旦','lebanon':'黎巴嫩',
+ 'bahrain':'巴林','kuwait':'科威特','palestine':'巴勒斯坦','india':'印度','pakistan':'巴基斯坦',
+ 'bangladesh':'孟加拉国','myanmar':'缅甸','malaysia':'马来西亚','singapore':'新加坡','philippines':'菲律宾',
+ 'cambodia':'柬埔寨','hong kong':'中国香港','chinese taipei':'中国台北','kyrgyzstan':'吉尔吉斯斯坦',
+ 'turkmenistan':'土库曼斯坦','tajikistan':'塔吉克斯坦','mongolia':'蒙古','sri lanka':'斯里兰卡',
+ 'afghanistan':'阿富汗','yemen':'也门','laos':'老挝','nepal':'尼泊尔','timor-leste':'东帝汶','brunei':'文莱',
+ 'new zealand':'新西兰','fiji':'斐济','solomon islands':'所罗门群岛','papua new guinea':'巴布亚新几内亚',
+ 'tahiti':'塔希提','vanuatu':'瓦努阿图','new caledonia':'新喀里多尼亚'
+};
+function nationZh(name){
+  if(!name) return name;
+  const k=name.trim().toLowerCase();
+  return NATION_ZH[k]||name;
+}
+// 真实 ESPN 俱乐部队名为英文/当地名，这里做→中文翻译（覆盖主流联赛，key 用小写精确匹配）
+const CLUB_ZH={
+ // 英超
+ 'afc bournemouth':'伯恩茅斯','arsenal':'阿森纳','aston villa':'阿斯顿维拉','brentford':'布伦特福德',
+ 'brighton & hove albion':'布莱顿','burnley':'伯恩利','chelsea':'切尔西','crystal palace':'水晶宫',
+ 'everton':'埃弗顿','fulham':'富勒姆','leeds united':'利兹联','liverpool':'利物浦','manchester city':'曼城',
+ 'manchester united':'曼联','newcastle united':'纽卡斯尔联','nottingham forest':'诺丁汉森林','sunderland':'桑德兰',
+ 'tottenham hotspur':'托特纳姆热刺','west ham united':'西汉姆联','wolverhampton wanderers':'狼队',
+ // 西甲
+ 'alavés':'阿拉维斯','athletic club':'毕尔巴鄂竞技','atlético madrid':'马德里竞技','barcelona':'巴塞罗那',
+ 'celta vigo':'塞尔塔','getafe':'赫塔菲','girona':'赫罗纳','levante':'莱万特','osasuna':'奥萨苏纳',
+ 'rayo vallecano':'巴列卡诺','real betis':'皇家贝蒂斯','real madrid':'皇家马德里','real oviedo':'奥维耶多',
+ 'real sociedad':'皇家社会','valencia':'瓦伦西亚','villarreal':'比利亚雷亚尔',
+ // 意甲
+ 'ac milan':'AC米兰','as roma':'罗马','atalanta':'亚特兰大','bologna':'博洛尼亚','cagliari':'卡利亚里',
+ 'fiorentina':'佛罗伦萨','internazionale':'国际米兰','juventus':'尤文图斯','lazio':'拉齐奥','lecce':'莱切',
+ 'napoli':'那不勒斯','parma':'帕尔马','pisa':'比萨','sassuolo':'萨索洛','torino':'都灵','udinese':'乌迪内斯',
+ // 德甲
+ '1. fc heidenheim 1846':'海登海姆','1. fc union berlin':'柏林联合','bayern munich':'拜仁慕尼黑',
+ 'borussia dortmund':'多特蒙德','borussia mönchengladbach':'门兴格拉德巴赫','fc augsburg':'奥格斯堡',
+ 'fc cologne':'科隆','hamburg sv':'汉堡','mainz':'美因茨','rb leipzig':'莱比锡红牛','sc freiburg':'弗赖堡',
+ 'st. pauli':'圣保利','tsg hoffenheim':'霍芬海姆','vfb stuttgart':'斯图加特','vfl wolfsburg':'沃尔夫斯堡',
+ 'werder bremen':'云达不来梅',
+ // 法甲
+ 'aj auxerre':'欧塞尔','as monaco':'摩纳哥','angers':'昂热','brest':'布雷斯特','le havre ac':'勒阿弗尔',
+ 'lens':'朗斯','lille':'里尔','lyon':'里昂','metz':'梅斯','nantes':'南特','nice':'尼斯','paris fc':'巴黎fc',
+ 'paris saint-germain':'巴黎圣日耳曼','stade rennais':'雷恩','strasbourg':'斯特拉斯堡','toulouse':'图卢兹',
+ // 葡超
+ 'avs':'avs','arouca':'阿罗卡','braga':'布拉加','c.d. nacional':'国民队','casa pia':'卡萨皮亚',
+ 'estoril':'埃斯托里尔','estrela':'埃斯特雷拉','fc famalicao':'法马利康','fc porto':'波尔图',
+ 'gil vicente':'吉维森特','moreirense':'莫雷拉人','rio ave':'里奥阿维','sporting cp':'葡萄牙体育',
+ 'vitória de guimaraes':'吉马良斯',
+ // 荷甲
+ 'az alkmaar':'阿尔克马尔','ajax amsterdam':'阿贾克斯','excelsior':'精英队','fc groningen':'格罗宁根',
+ 'fc twente':'特温特','fc utrecht':'乌得勒支','fc volendam':'福伦丹','feyenoord rotterdam':'费耶诺德',
+ 'fortuna sittard':'福图纳锡塔德','go ahead eagles':'前进之鹰','heerenveen':'海伦芬','heracles almelo':'赫拉克勒斯',
+ 'nac breda':'布雷达','nec nijmegen':'奈梅亨','pec zwolle':'兹沃勒','psv eindhoven':'埃因霍温',
+ 'sparta rotterdam':'鹿特丹斯巴达','telstar':'泰勒星',
+ // 英冠
+ 'birmingham city':'伯明翰','blackburn rovers':'布莱克本','bristol city':'布里斯托尔城','charlton athletic':'查尔顿',
+ 'coventry city':'考文垂','derby county':'德比郡','hull city':'赫尔城','leicester city':'莱斯特城',
+ 'middlesbrough':'米德尔斯堡','millwall':'米尔沃尔','norwich city':'诺维奇','oxford united':'牛津联',
+ 'portsmouth':'朴茨茅斯','preston north end':'普雷斯顿','queens park rangers':'女王公园巡游者',
+ 'sheffield wednesday':'谢周三','southampton':'南安普顿','stoke city':'斯托克城','swansea city':'斯旺西',
+ 'watford':'沃特福德','west bromwich albion':'西布罗姆维奇','wrexham':'雷克瑟姆',
+ // 比甲
+ 'anderlecht':'安德莱赫特','antwerp':'安特卫普','cercle brugge ksv':'布鲁日cercle','club brugge':'布鲁日',
+ 'dender':'登德尔','kaa gent':'根特','kvc westerlo':'韦斯特洛','oh leuven':'奥德赫维莱','raal la louvière':'拉卢维埃',
+ 'racing genk':'亨克','royal charleroi sc':'沙勒罗瓦','sint-truidense':'圣特吕登','union st.-gilloise':'圣吉罗斯联',
+ 'zulte-waregem':'瓦勒海姆',
+ // 欧冠/欧联 等欧洲赛事常见队
+ 'benfica':'本菲卡','bodo/glimt':'博多格林特','fk qarabag':'卡拉巴赫','olympiacos':'奥林匹亚科斯','pafos':'帕福斯',
+ 'celtic':'凯尔特人','dinamo zagreb':'萨格勒布迪纳摩','fc basel':'巴塞尔', 'fc midtjylland':'中日德兰',
+ 'fcsb':'布加勒斯特星','fenerbahce':'费内巴切','ferencvaros':'费伦茨瓦罗斯','ludogorets razgrad':'卢多戈雷茨',
+ 'maccabi tel-aviv':'特拉维夫马卡比','malmö ff':'马尔默','paok':'帕奥克','panathinaikos':'帕纳辛奈科斯',
+ 'rb salzburg':'萨尔茨堡红牛','rangers':'流浪者','red star belgrade':'贝尔格莱德红星','sk brann':'布兰',
+ 'sk sturm graz':'格拉茨风暴','viktoria plzen':'比尔森胜利','young boys':'年青人',
+ // 日职
+ 'albirex niigata':'新潟天鹅','avispa fukuoka':'福冈黄蜂','cerezo osaka':'大阪樱花','fagiano okayama':'冈山绿雉',
+ 'gamba osaka':'大阪钢巴','kashima antlers':'鹿岛鹿角','kawasaki frontale':'川崎前锋','kyoto sanga':'京都',
+ 'nagoya grampus':'名古屋鲸八','shimizu s-pulse':'清水心跳','shonan bellmare':'湘南海洋','tokyo verdy 1969':'东京绿茵',
+ 'urawa red diamonds':'浦和红钻','vissel kobe':'神户胜利船','yokohama f. marinos':'横滨水手','yokohama fc':'横滨fc',
+ // 中超
+ 'beijing guoan':'北京国安','changchun yatai':'长春亚泰','chengdu rongcheng':'成都蓉城','henan':'河南队',
+ 'qingdao west coast':'青岛西海岸','shandong taishan':'山东泰山','shanghai port':'上海海港',
+ 'shanghai shenhua':'上海申花','yunnan yukun':'云南玉昆','zhejiang professional fc':'浙江队'
+};
+function clubZh(name){
+  if(!name) return name;
+  if(/[一-龥]/.test(name)) return name;            // 已是中文（如部分中超）
+  return CLUB_ZH[name.trim().toLowerCase()]||name; // 否则查表，未覆盖保留原样
+}
 const TEAMS={
  '英超':['曼联','曼城','阿森纳','利物浦','切尔西','热刺','纽卡','维拉','布莱顿','西汉姆'],
  '西甲':['皇马','巴萨','马竞','塞维利亚','比利亚雷','毕尔巴','瓦伦西亚','赫罗纳','皇家社会','贝蒂斯'],
  '意甲':['国米','米兰','尤文','那不勒斯','罗马','拉齐奥','亚特兰大','佛罗伦萨','都灵','博洛尼亚'],
  '德甲':['拜仁','多特','勒沃库森','莱比锡','法兰克福','柏林联合','弗赖堡','门兴','沃尔夫斯','斯图加特'],
  '法甲':['巴黎','马赛','摩纳哥','里昂','里尔','雷恩','尼斯','朗斯','布雷斯特','南特'],
+ '葡超':['波尔图','本菲卡','里斯本','布拉加','吉马良斯','法马利康','博阿维斯塔','埃斯托里尔','维兹拉','阿罗卡'],
+ '荷甲':['阿贾克斯','PSV','费耶诺德','阿尔克马尔','特温特','乌德勒支','海伦芬','格罗宁根','鹿特丹','前进之鹰'],
+ '英冠':['利兹联','莱斯特','南安普顿','西布朗','诺维奇','米德尔斯堡','考文垂','谢菲联','沃特福德','布莱克本'],
+ '比甲':['布鲁日','根特','圣吉罗斯','安特卫普','亨克','标准列日','安德莱赫特','梅赫伦','韦斯特洛','色格拉'],
  '中超':['上海海港','上海申花','北京国安','山东泰山','成都蓉城','武汉三镇','浙江队','天津津门','河南队','沧州雄狮'],
- '欧冠':['曼城','皇马','拜仁','巴黎','国米','巴萨','阿森纳','多特','马竞','勒沃库森'],
  '日职':['横滨水手','川崎前锋','鹿岛鹿角','浦和红钻','大阪钢巴','名古屋','广岛三箭','神户胜利','FC东京','柏太阳神'],
  '韩K':['全北现代','蔚山现代','首尔FC','水原三星','大田市民','江原FC','金泉尚武','浦项制铁','仁川联','光州FC'],
+ '欧冠':['曼城','皇马','拜仁','巴黎','国米','巴萨','阿森纳','多特','马竞','勒沃库森'],
+ '欧联':['罗马','勒沃库森','亚特兰大','比利亚雷','贝蒂斯','阿贾克斯','葡萄牙体育','格拉斯哥','卡拉巴赫','罗马尼亚'],
+ '欧协联':['佛罗伦萨','西汉姆','阿斯顿维拉','里斯本','布拉格','根特','巴塞尔','莫尔德','乔治罗尼亚','卢加诺'],
  '美职':['洛杉矶FC','迈阿密','西雅图','亚特兰大联','纽约红牛','费城','盐湖城','多伦多','达拉斯','波特兰'],
+ // 国家队（演示用队名；真实数据由 ESPN 国家队赛事接入）
+ '欧国联':COUNTRIES,'世界杯':COUNTRIES,'欧洲杯':COUNTRIES,'国际友谊赛':COUNTRIES,
 };
 const LEAGUE_KEYS=Object.keys(TEAMS);
+// 竞彩常用（俱乐部联赛预设）
+const JCZQ_LEAGUES=['英超','西甲','意甲','德甲','法甲','葡超','荷甲','英冠','比甲','欧冠','欧联','欧协联','日职','韩K','中超'];
+// 国家队赛事预设
+const NT_LEAGUES=['欧国联','世界杯','欧洲杯','国际友谊赛'];
+// ESPN 真实赛程抓取源（按联赛拉，leagueId 统一用中文名，与示例/筛选一致）
+// 注：ESPN 免费接口不提供「韩K」「欧协联」——这两项仅演示模式可见；真实模式若选它们会提示无数据。
+const LEAGUE_SOURCES=[
+  {code:'eng.1',zh:'英超'},{code:'esp.1',zh:'西甲'},{code:'ita.1',zh:'意甲'},
+  {code:'ger.1',zh:'德甲'},{code:'fra.1',zh:'法甲'},{code:'por.1',zh:'葡超'},
+  {code:'ned.1',zh:'荷甲'},{code:'eng.2',zh:'英冠'},{code:'bel.1',zh:'比甲'},
+  {code:'uefa.champions',zh:'欧冠'},{code:'uefa.europa',zh:'欧联'},
+  {code:'jpn.1',zh:'日职'},{code:'chn.1',zh:'中超'},
+  {code:'uefa.nations',zh:'欧国联'},{code:'fifa.world',zh:'世界杯'},
+  {code:'uefa.euro',zh:'欧洲杯'},{code:'fifa.friendly',zh:'国际友谊赛'},
+];
+// 筛选条固定主列表（始终显示，含 ESPN 未覆盖的韩K/欧协联，便于用户选择/演示）
+const MASTER_LEAGUES=['英超','西甲','意甲','德甲','法甲','葡超','荷甲','英冠','比甲','欧冠','欧联','欧协联','日职','韩K','中超','欧国联','世界杯','欧洲杯','国际友谊赛'];
 const HANDI_POOL=[-1.5,-1.25,-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1,1.25,1.5];
 const OU_POOL=[1.75,2,2.25,2.5,2.75,3,3.25,3.5];
 
@@ -214,13 +375,14 @@ function drift(rng,o,moveHandi){
 }
 
 /* ---------- 比赛生成（示例数据） ---------- */
-function genMatches(dateStr){
+function genMatches(dateStr, allowedLeagues){
   const rng=rngFor(dateStr);
   const todayStr=fmtDate(new Date());
+  const leaguePool=(allowedLeagues && allowedLeagues.length)?allowedLeagues:LEAGUE_KEYS;
   const n=6+Math.floor(rng()*4);
   const list=[];
   for(let i=0;i<n;i++){
-    const league=pick(rng,LEAGUE_KEYS);
+    const league=pick(rng,leaguePool);
     const pool=TEAMS[league];
     let h=pick(rng,pool),a=pick(rng,pool);
     while(a===h){a=pick(rng,pool);}
@@ -241,10 +403,10 @@ function genMatches(dateStr){
       else { status='upcoming'; }
     } else { status='upcoming'; }
 
-    list.push({id:dateStr+'-'+i,date:dateStr,time,league,home:h,away:a,status,
+    list.push({id:dateStr+'-'+i,date:dateStr,time,league,leagueId:league,home:h,away:a,status,
       ahInitial:initial, ahLive:live, ahFinal:final,
       ouInitial:initial, ouLive:live, ouFinal:final,
-      result});
+      result, demoOdds:true});
   }
   list.sort((x,y)=>x.time.localeCompare(y.time));
   return list;
@@ -299,15 +461,103 @@ function calcOU(hg,ag,line){
 }
 
 /* =========================================================
- *  真实数据接口（预留）
+ *  真实数据接口（API-Football 免费档：真实赛程；盘口暂用示例）
  * ========================================================= */
+const fixtureCache={};   // {dateStr:{ts,matches}} 避免重复请求，节省免费额度
+function leagueZh(name){
+  const m={'Premier League':'英超','La Liga':'西甲','Serie A':'意甲','Bundesliga':'德甲',
+    'Ligue 1':'法甲','Chinese Super League':'中超','Champions League':'欧冠','Europa League':'欧联',
+    'J1 League':'日职','K League 1':'韩K','MLS':'美职','EFL Championship':'英冠',
+    'Primeira Liga':'葡超','Eredivisie':'荷甲','Russian Premier League':'俄超'};
+  return m[name]||name;
+}
+function mapStatus(short){
+  if(short==='FT'||short==='AET'||short==='PEN') return 'finished';
+  if(short==='NS'||short==='TBD'||short==='PST'||short==='CAN'||short==='SUSP'||short==='ABD'||short==='WO') return 'upcoming';
+  return 'live'; // 1H,2H,HT,LIVE,ET,BT ...
+}
+function genDemoOddsFor(id){
+  const rng=rngFor('odds-'+id);
+  return genOdds(rng, pick(rng,HANDI_POOL), pick(rng,OU_POOL));
+}
+function fmtLocalTime(iso){
+  try{ const d=new Date(iso); if(isNaN(d)) return '--:--'; const hh=String(d.getHours()).padStart(2,'0'); const mm=String(d.getMinutes()).padStart(2,'0'); return hh+':'+mm; }
+  catch(e){ return '--:--'; }
+}
+function mapApiFixture(f, dateStr){
+  const fx=f.fixture, lg=f.league, g=f.goals, sc=f.score||{};
+  const status=mapStatus(fx.status.short);
+  const od=genDemoOddsFor('api-'+fx.id);
+  let result=null;
+  if(status==='finished'){
+    const hg=(g&&g.home!=null)?g.home:0, ag=(g&&g.away!=null)?g.away:0;
+    const hht=(sc.halftime&&sc.halftime.home!=null)?sc.halftime.home:Math.floor(hg/2);
+    const aht=(sc.halftime&&sc.halftime.away!=null)?sc.halftime.away:Math.floor(ag/2);
+    result={ft:`${hg}-${ag}`,ht:`${hht}-${aht}`,hg,ag,hht,aht};
+  }
+  return {
+    id:'api-'+fx.id, date:dateStr, time:fmtLocalTime(fx.date), league:leagueZh(lg.name), leagueId:String(lg.id),
+    home:(f.teams.home&&f.teams.home.name)||'主队', away:(f.teams.away&&f.teams.away.name)||'客队',
+    status, ahInitial:od, ahLive:null, ahFinal:null, ouInitial:od, ouLive:null, ouFinal:null,
+    result, demoOdds:true
+  };
+}
+/* ---- ESPN 真实赛程（无需注册、浏览器可跨域 CORS *） ---- */
+function mapEspnEvent(e, dateStr, zh){
+  const comp=(e.competitions&&e.competitions[0])||{};
+  const cs=comp.competitors||[];
+  const home=cs.find(c=>c.homeAway==='home')||{};
+  const away=cs.find(c=>c.homeAway==='away')||{};
+  const state=(e.status&&e.status.type&&e.status.type.state);
+  let status='upcoming';
+  if(state==='post') status='finished'; else if(state==='in') status='live';
+  const hg=home.score!=null?parseInt(home.score,10):null;
+  const ag=away.score!=null?parseInt(away.score,10):null;
+  let result=null;
+  if(status==='finished' && hg!=null && ag!=null){
+    result={ft:`${hg}-${ag}`,ht:'—',hg,ag,hht:null,aht:null};
+  }
+  const od=genDemoOddsFor('espn-'+e.id);
+  const isNT=NT_LEAGUES.includes(zh);   // 国家队赛事：英文队名转中文
+  const rawH=(home.team&&home.team.displayName)||'';
+  const rawA=(away.team&&away.team.displayName)||'';
+  const toName=(raw)=> isNT ? nationZh(raw) : clubZh(raw);
+  return {
+    id:'espn-'+e.id, date:dateStr, time:fmtLocalTime(e.date), league:zh, leagueId:zh,
+    home:(toName(rawH))||'主队',
+    away:(toName(rawA))||'客队',
+    status, ahInitial:od, ahLive:null, ahFinal:null, ouInitial:od, ouLive:null, ouFinal:null,
+    result, demoOdds:true
+  };
+}
+async function fetchEspnMatches(dateStr){
+  const cacheKey='espn-'+dateStr;
+  if(fixtureCache[cacheKey]) return fixtureCache[cacheKey];
+  const ymd=dateStr.replace(/-/g,'');
+  const results=await Promise.all(LEAGUE_SOURCES.map(async ls=>{
+    try{
+      const r=await fetch(`https://site.api.espn.com/apis/site/v2/sports/soccer/${ls.code}/scoreboard?dates=${ymd}`);
+      if(!r.ok) return [];
+      const j=await r.json();
+      return (j.events||[]).map(e=>mapEspnEvent(e,dateStr,ls.zh));
+    }catch(e){ return []; }
+  }));
+  const list=results.flat().sort((a,b)=>a.time.localeCompare(b.time));
+  fixtureCache[cacheKey]=list;
+  return list;
+}
+
 async function fetchRealMatches(dateStr, apiKey){
-  // 骨架：按真实 API 返回映射成我们的 match 结构
-  // const url=`https://v3.football.api-sports.io/odds?date=${dateStr}&bookmaker=Bet365`;
-  // const r=await fetch(url,{headers:{'x-apisports-key':apiKey}});
-  // const j=await r.json(); return j.response.map(mapApiFootballToMatch);
-  console.warn('fetchRealMatches: 真实接口为骨架，当前回退示例数据（请实现映射或部署到可联网环境）。');
-  return null;
+  if(fixtureCache[dateStr]) return fixtureCache[dateStr].matches;
+  const url=`https://v3.football.api-sports.io/fixtures?date=${dateStr}`;
+  const r=await fetch(url,{headers:{'x-apisports-key':apiKey}});
+  if(!r.ok) throw new Error('API-Football HTTP '+r.status);
+  const j=await r.json();
+  if(j.errors && (j.errors.requests || j.errors.token || j.errors.plan)) throw new Error('API-Football: '+JSON.stringify(j.errors));
+  const matches=(j.response||[]).map(f=>mapApiFixture(f,dateStr));
+  matches.sort((a,b)=>a.time.localeCompare(b.time));
+  fixtureCache[dateStr]={ts:Date.now(),matches};
+  return matches;
 }
 
 /* =========================================================
@@ -320,11 +570,13 @@ function loadPred(){ try{return JSON.parse(localStorage.getItem(LS_PRED))||{};}c
 function savePred(o){ localStorage.setItem(LS_PRED,JSON.stringify(o)); }
 function loadRes(){ try{return JSON.parse(localStorage.getItem(LS_RES))||{};}catch(e){return {};} }
 function saveRes(o){ localStorage.setItem(LS_RES,JSON.stringify(o)); }
-function loadSet(){ try{return JSON.parse(localStorage.getItem(LS_SET))||{provider:'demo',key:''};}catch(e){return {provider:'demo',key:''};} }
+function loadSet(){ try{const o=JSON.parse(localStorage.getItem(LS_SET)); return Object.assign({provider:'espn',key:'',leagues:null}, o||{});}catch(e){return {provider:'espn',key:'',leagues:null};} }
 function saveSet(o){ localStorage.setItem(LS_SET,JSON.stringify(o)); }
 
 let CUR_DATE=fmtDate(new Date());
-let CUR_MATCHES=[];
+let CUR_ALL=[];        // 当前日期的全部比赛（未筛选）
+let CUR_MATCHES=[];    // 经联赛筛选后展示的比赛
+let LEAGUE_SEL=(()=>{ const s=loadSet(); return (s&&s.leagues!==undefined)? s.leagues : null; })();  // null=全部；数组=所选联赛 id
 
 function fmtDate(d){ const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,'0');const day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`; }
 function shiftDate(dStr,delta){ const d=new Date(dStr+'T00:00:00'); d.setDate(d.getDate()+delta); return fmtDate(d); }
@@ -355,21 +607,23 @@ function ouCell(label,line,over,under,cls){
 
 function renderMatches(){
   const wrap=document.getElementById('matchList');
-  if(!CUR_MATCHES.length){ wrap.innerHTML='<div class="empty">当天暂无比赛（示例数据）。可切换日期查看。</div>'; return; }
+  if(!CUR_MATCHES.length){ wrap.innerHTML='<div class="empty">当天暂无真实赛程，已显示示例数据。<br>想看真实比赛？在上方「日期」选择器挑一个有比赛的日子（如 <b>2025-09-13</b> 英超有 8 场）。</div>'; return; }
   const predStore=loadPred();
   const resStore=loadRes();
 
   wrap.innerHTML=CUR_MATCHES.map(m=>{
     const showFinal = m.status==='finished';
     const liveObj = showFinal? m.ahFinal : m.ahLive;
+    const demoTag = m.demoOdds ? '·示例' : '';
+    const pendLabel = m.demoOdds ? '即时/终盘·示例未提供' : (showFinal?'终盘':'即时盘');
     // 亚盘
-    let ahHtml=oddsCell('初盘', m.ahInitial.handi, m.ahInitial.homeOdds, m.ahInitial.awayOdds,'');
+    let ahHtml=oddsCell('初盘'+demoTag, m.ahInitial.handi, m.ahInitial.homeOdds, m.ahInitial.awayOdds,'');
     if(liveObj){ ahHtml+=oddsCell(showFinal?'终盘':'即时盘', liveObj.handi, liveObj.homeOdds, liveObj.awayOdds, showFinal?'final':'live'); }
-    else { ahHtml+=`<div class="ob-cell" style="opacity:.5"><div class="lab">${showFinal?'终盘':'即时盘'}</div><div class="val" style="color:var(--gray)">未开</div></div>`; }
+    else { ahHtml+=`<div class="ob-cell" style="opacity:.5"><div class="lab">${pendLabel}</div><div class="val" style="color:var(--gray)">未提供</div></div>`; }
     // 大小球
-    let ouHtml=ouCell('初盘', m.ouInitial.line, m.ouInitial.overOdds, m.ouInitial.underOdds,'');
+    let ouHtml=ouCell('初盘'+demoTag, m.ouInitial.line, m.ouInitial.overOdds, m.ouInitial.underOdds,'');
     if(liveObj){ ouHtml+=ouCell(showFinal?'终盘':'即时盘', liveObj.line, liveObj.overOdds, liveObj.underOdds, showFinal?'final':'live'); }
-    else { ouHtml+=`<div class="ob-cell" style="opacity:.5"><div class="lab">${showFinal?'终盘':'即时盘'}</div><div class="val" style="color:var(--gray)">未开</div></div>`; }
+    else { ouHtml+=`<div class="ob-cell" style="opacity:.5"><div class="lab">${pendLabel}</div><div class="val" style="color:var(--gray)">未提供</div></div>`; }
 
     // 实际结果（手动优先，回退 demo 已完场）
     const manual = resStore[m.id];
@@ -497,23 +751,105 @@ function renderStats(){
     : '还没填预测。在每张比赛卡下方填入你预测的比分（最多 3 个，可留空），第二天把真实结果填进「实际比分」即可自动核对。';
 }
 
+/* =========================================================
+ *  联赛筛选（多选标签 + 竞彩常用预设）
+ * ========================================================= */
+function jczqIds(leagues){ return leagues.filter(l=>JCZQ_LEAGUES.includes(l.zh)).map(l=>l.id); }
+function effectiveSel(leagues){
+  if(LEAGUE_SEL===null) return new Set(leagues.map(l=>l.id));
+  return new Set(LEAGUE_SEL.filter(id=>leagues.some(l=>l.id===id)));
+}
+function persistLeagues(){ const s=loadSet(); s.leagues=LEAGUE_SEL; saveSet(s); }
+
+const ALL_LEAGUE_OBJS=MASTER_LEAGUES.map(zh=>({id:zh,zh}));
+
+// 下拉项 → 选中联赛集合
+function selToState(v){
+  if(v==='all') return null;
+  if(v==='jczq') return jczqIds(ALL_LEAGUE_OBJS);
+  if(v==='nt') return NT_LEAGUES.slice();
+  return [v];
+}
+// 选中联赛集合 → 下拉项（用于回显存储）
+function stateToSelValue(){
+  if(LEAGUE_SEL===null) return 'all';
+  const jczq=jczqIds(ALL_LEAGUE_OBJS);
+  if(jczq.length && LEAGUE_SEL.length===jczq.length && jczq.every(id=>LEAGUE_SEL.includes(id))) return 'jczq';
+  if(LEAGUE_SEL.length===NT_LEAGUES.length && NT_LEAGUES.every(id=>LEAGUE_SEL.includes(id))) return 'nt';
+  if(LEAGUE_SEL.length===1) return LEAGUE_SEL[0];
+  return 'all';
+}
+// 旧版多选存储兼容：非法组合（既非预设也非单联赛）归一为“全部”
+function normalizeSel(){
+  if(LEAGUE_SEL===null) return;
+  const v=stateToSelValue();
+  if(v==='all'){ LEAGUE_SEL=null; persistLeagues(); }
+}
+
+function buildLeagueSelect(){
+  const sel=document.getElementById('leagueSel');
+  let html='<option value="all">全部联赛</option>';
+  html+='<option value="jczq">竞彩常用</option>';
+  html+='<option value="nt">国家队</option>';
+  html+='<optgroup label="按联赛筛选">';
+  MASTER_LEAGUES.forEach(zh=>{ html+=`<option value="${zh}">${zh}</option>`; });
+  html+='</optgroup>';
+  sel.innerHTML=html;
+  sel.value=stateToSelValue();
+  sel.onchange=()=>{ LEAGUE_SEL=selToState(sel.value); persistLeagues(); updateLeagueUI(); };
+}
+
+function updateLeagueUI(){
+  const leagues=ALL_LEAGUE_OBJS;
+  // 切换数据源/日期后若所选联赛与当前完全无交集，重置为全显，避免空白
+  if(LEAGUE_SEL!==null && leagues.length && !leagues.some(l=>LEAGUE_SEL.includes(l.id))){ LEAGUE_SEL=null; }
+  const sel=effectiveSel(leagues);
+  CUR_MATCHES=CUR_ALL.filter(m=>sel.has(m.leagueId));
+  const selEl=document.getElementById('leagueSel');
+  if(selEl) selEl.value=stateToSelValue();
+  renderStats(); renderMatches();
+}
+
 async function loadAndRender(){
+  normalizeSel();
   const set=loadSet();
   const badge=document.getElementById('srcBadge');
-  if(set.provider==='apifootball' && set.key){
-    badge.textContent='真实数据·API'; badge.classList.add('real');
+  const hint=document.getElementById('hintBanner');
+  let usedReal=false;
+  if(set.provider==='espn'){
+    try{
+      const real=await fetchEspnMatches(CUR_DATE);
+      if(real && real.length){ CUR_ALL=real; usedReal=true; }
+      else { CUR_ALL=genMatches(CUR_DATE); }
+    }catch(e){ CUR_ALL=genMatches(CUR_DATE); }
+    if(usedReal){
+      badge.textContent='ESPN 真实赛程'; badge.classList.add('real');
+      hint.style.display='none';
+    } else {
+      badge.textContent='示例数据（演示）'; badge.classList.remove('real');
+      hint.style.display='flex';
+      hint.innerHTML='当前显示的是<b>示例数据（演示用，非真实比赛）</b>——ESPN 在所选日期暂无真实赛程（多为非比赛日或所选联赛当天无赛）。 '+
+        '<button id="btnDemoReal">看真实比赛样例（2025-09-13 英超 8 场）</button>';
+      document.getElementById('btnDemoReal').onclick=()=>{ CUR_DATE='2025-09-13'; loadAndRender(); };
+    }
+  } else if(set.provider==='apifootball' && set.key){
+    badge.textContent='真实赛程·示例盘口'; badge.classList.add('real');
     try{
       const real=await fetchRealMatches(CUR_DATE,set.key);
-      if(real && real.length){ CUR_MATCHES=real; }
-      else { CUR_MATCHES=genMatches(CUR_DATE); toast('真实接口暂未接通，已显示示例数据'); }
-    }catch(e){ CUR_MATCHES=genMatches(CUR_DATE); toast('真实接口调用失败，已回退示例数据'); }
+      if(real && real.length){ CUR_ALL=real; usedReal=true; }
+      else { CUR_ALL=genMatches(CUR_DATE); }
+    }catch(e){ CUR_ALL=genMatches(CUR_DATE); }
+    if(!usedReal){ hint.style.display='flex'; hint.innerHTML='API-Football 当天暂无真实赛程，已显示<b>示例数据（演示）</b>。'; }
+    else hint.style.display='none';
   } else {
     badge.textContent='示例数据'; badge.classList.remove('real');
-    CUR_MATCHES=genMatches(CUR_DATE);
+    hint.style.display='none';
+    const allowed=(LEAGUE_SEL&&LEAGUE_SEL.length)?LEAGUE_SEL:null;
+    CUR_ALL=genMatches(CUR_DATE, allowed);
   }
   document.getElementById('datePick').value=CUR_DATE;
   document.querySelectorAll('.qbtn').forEach(b=>b.classList.toggle('on', +b.dataset.d===0 && CUR_DATE===fmtDate(new Date())));
-  renderStats(); renderMatches();
+  updateLeagueUI();
 }
 
 /* =========================================================
@@ -526,9 +862,10 @@ document.getElementById('btnRefresh').onclick=()=>loadAndRender();
 const mask=document.getElementById('modalMask');
 document.getElementById('btnSettings').onclick=()=>{ const s=loadSet(); document.getElementById('setProvider').value=s.provider; document.getElementById('setKey').value=s.key||''; mask.classList.add('open'); };
 document.getElementById('btnCancel').onclick=()=>mask.classList.remove('open');
-document.getElementById('btnSave').onclick=()=>{ const provider=document.getElementById('setProvider').value; const key=document.getElementById('setKey').value.trim(); saveSet({provider,key}); mask.classList.remove('open'); loadAndRender(); toast('已保存，重新加载数据'); };
+document.getElementById('btnSave').onclick=()=>{ const provider=document.getElementById('setProvider').value; const key=document.getElementById('setKey').value.trim(); const s=loadSet(); s.provider=provider; s.key=key; saveSet(s); mask.classList.remove('open'); loadAndRender(); toast('已保存，重新加载数据'); };
 mask.onclick=e=>{ if(e.target===mask) mask.classList.remove('open'); };
 
+buildLeagueSelect();
 loadAndRender();
 </script>
 </body>
