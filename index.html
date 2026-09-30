@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="zh-CN" data-page-node-id="EDuCArmchrsCY0q0T5OwjM">
+<head data-page-node-id="pSZrMEJgPVDFcxbG5KGrJE">
+<meta charset="UTF-8" data-page-node-id="tmBLyV4kw7RjRmFMTs62zG">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="WgEGIE37TxM8AU4miHRz1D">
 <title>竞足助手 · 每日盘口与盘路核对</title>
 <style>
   :root{
@@ -107,74 +107,74 @@
   code{background:#eef2f8;padding:1px 5px;border-radius:4px;font-size:11px}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <header>
-    <h1>⚽ 竞足助手</h1>
-    <span id="srcBadge" class="badge">示例数据</span>
-    <div class="spacer"></div>
-    <button class="icon-btn" id="btnSettings">⚙ 数据源</button>
-    <button class="icon-btn" id="btnRefresh">↻ 刷新</button>
+<body data-page-node-id="iZwpZo0ACcn7of0Uy2SDhb">
+<div class="wrap" data-page-node-id="DTJr7wKX744IcAIHoqmd6y">
+  <header data-page-node-id="AZ1QyWI9APX0ElIt6sO4FB">
+    <h1 data-page-node-id="9wzdEGvMg6RUkWyzfUFF50">⚽ 竞足助手</h1>
+    <span id="srcBadge" class="badge" data-page-node-id="2yTvsIRScfY2vwEhRZdfyd">示例数据</span>
+    <div class="spacer" data-page-node-id="z0cCe2iBfjhRLJzb4usb4b"></div>
+    <button class="icon-btn" id="btnSettings" data-page-node-id="8G6tUz5kaJVqGpbeUGiIxH">⚙ 数据源</button>
+    <button class="icon-btn" id="btnRefresh" data-page-node-id="ET7EIAVIJaWB3kamdI9cxg">↻ 刷新</button>
   </header>
 
-  <div class="toolbar">
-    <input type="date" id="datePick">
-    <button class="qbtn" data-d="-1">昨天</button>
-    <button class="qbtn" data-d="0">今天</button>
-    <button class="qbtn" data-d="1">明天</button>
-    <select id="leagueSel" class="lsel"></select>
+  <div class="toolbar" data-page-node-id="PZ9xmuOVYXzEKdPap8sfta">
+    <input type="date" id="datePick" data-page-node-id="mn4fA1o0SzeRzD55PCMl3E">
+    <button class="qbtn" data-d="-1" data-page-node-id="xMU6FHlHAXQUIXE26AAjza">昨天</button>
+    <button class="qbtn" data-d="0" data-page-node-id="bS4YXJANetcM3d2G9416Gz">今天</button>
+    <button class="qbtn" data-d="1" data-page-node-id="VaAQ7P7sqf2272i1klfcH9">明天</button>
+    <select id="leagueSel" class="lsel" data-page-node-id="34uFWaAPK0OS8mZj15XNYu"></select>
   </div>
 
-  <div class="hint-banner" id="hintBanner" style="display:none"></div>
+  <div class="hint-banner" id="hintBanner" style="display:none" data-page-node-id="QEof1SwEG4BAUAzukXvVD2"></div>
 
-  <div class="stats" id="stats"></div>
-  <div class="predbar" id="predBar"></div>
+  <div class="stats" id="stats" data-page-node-id="sQuiJSRRyFGN8JFAv01nDN"></div>
+  <div class="predbar" id="predBar" data-page-node-id="rHbJZk5dm1fz3kGwx4BDwa"></div>
 
-  <div id="matchList"></div>
+  <div id="matchList" data-page-node-id="CkJoEvS8B0gJ4HAx8lBvY4"></div>
 
-  <footer>
-    比赛：默认接 <b>ESPN 真实赛程</b>（无需注册、浏览器可跨域），显示<b>当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛）。<br>
-    注意：ESPN 免费接口<b>不提供「韩K」「欧协联」</b>，这两项仅在示例/演示模式下可见；真实模式选它们会提示无数据（后续接其他源再补）。<br>
-    盘口：当前为<b>示例盘口（标注“示例”）</b>；真实 Bet365（36*）亚盘/大小球需付费赔率接口，到时再接。<br>
-    每张比赛卡下方有 <b>3 个预测比分框</b>（可留空）和 <b>实际比分框</b>：第二天把真实结果填进「实际比分」，网页自动核对 3 个预测是否命中。<br>
-    盘路颜色：<span style="color:var(--red);font-weight:700">红=赢盘</span> /
-    <span style="color:var(--green);font-weight:700">绿=输盘</span> /
-    <span style="color:var(--gray);font-weight:700">灰=走盘</span>（含赢半/输半）。<br>
+  <footer data-page-node-id="kzWrv5F58hwwXAZ8FwpAW9">
+    比赛：默认接 <b data-page-node-id="KHwXpW4vxEWSQFlVFkVklL">ESPN 真实赛程</b>（无需注册、浏览器可跨域），显示<b data-page-node-id="xsQD5zX6x88TAoJARfhenZ">当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛）。<br data-page-node-id="zPDkcz7bBF03g9MCFuRtwB">
+    注意：ESPN 免费接口<b data-page-node-id="JVlmFkhXj9CjcRBIhwvlU5">不提供「韩K」「欧协联」</b>，这两项仅在示例/演示模式下可见；真实模式选它们会提示无数据（后续接其他源再补）。<br data-page-node-id="C35ALsevDAATqm2DPErE7T">
+    盘口：当前为<b data-page-node-id="HZzcgvcZOHQsWxDq6CNyT4">示例盘口（标注“示例”）</b>；真实 Bet365（36*）亚盘/大小球需付费赔率接口，到时再接。<br data-page-node-id="FtC8LXBadNCpgKglS9JtPU">
+    每张比赛卡下方有 <b data-page-node-id="ry2wQviPPGfDQVPBepzQF4">3 个预测比分框</b>（可留空）和 <b data-page-node-id="pAyWB8xkwyXFLLzR9YOmGr">实际比分框</b>：第二天把真实结果填进「实际比分」，网页自动核对 3 个预测是否命中。<br data-page-node-id="cEP9qvpjG1vbF0UiwldauD">
+    盘路颜色：<span style="color:var(--red);font-weight:700" data-page-node-id="l0Q6c9ILETSB7SF10VXfIK">红=赢盘</span> /
+    <span style="color:var(--green);font-weight:700" data-page-node-id="z007FFroamrS8euDrUPIal">绿=输盘</span> /
+    <span style="color:var(--gray);font-weight:700" data-page-node-id="XkBxGTEilNsyMhhpZbocnw">灰=走盘</span>（含赢半/输半）。<br data-page-node-id="VECYKYAknHpmsvzQoIjehg">
     在「⚙ 数据源」可切换 ESPN / 示例 / API-Football；顶部「联赛」下拉可筛选，含「竞彩常用」「国家队」预设。
   </footer>
 </div>
 
 <!-- 设置弹窗 -->
-<div class="modal-mask" id="modalMask">
-  <div class="modal">
-    <h3>数据源设置</h3>
-    <div class="field">
-      <label>数据源</label>
-      <select id="setProvider">
-        <option value="espn">ESPN 真实赛程（无需注册，推荐）</option>
-        <option value="demo">示例数据（本地生成，离线可用）</option>
-        <option value="apifootball">API-Football（需 key，潜力接盘口）</option>
+<div class="modal-mask" id="modalMask" data-page-node-id="tRIlKBDE6hNr8GjPZkNbrm">
+  <div class="modal" data-page-node-id="jWO8e29fkX8Zf9jW0y8VKF">
+    <h3 data-page-node-id="oS7e7gNvEoqtd9oxcOnMyI">数据源设置</h3>
+    <div class="field" data-page-node-id="zxAnjbnfKPEYzrVOyjEgPF">
+      <label data-page-node-id="LMq8Ssj681R5lzITiQM78u">数据源</label>
+      <select id="setProvider" data-page-node-id="wzuSd3AIRdIuWgykWTMR7L">
+        <option value="espn" data-page-node-id="D66Z9JSqvSHcbMMf0HZIlf">ESPN 真实赛程（无需注册，推荐）</option>
+        <option value="demo" data-page-node-id="3cnx3WKvaCPvYKXLCKou4t">示例数据（本地生成，离线可用）</option>
+        <option value="apifootball" data-page-node-id="zcVKGjJoKv2Z6wxWEAO3lm">API-Football（需 key，潜力接盘口）</option>
       </select>
     </div>
-    <div class="field">
-      <label>API Key（仅选 API-Football 时填写）</label>
-      <input type="text" id="setKey" placeholder="粘贴你的 API-Football key">
+    <div class="field" data-page-node-id="9YlkdO0Io93p1HbnGD6uQ5">
+      <label data-page-node-id="GZdGhcwscdvJFH84pUcH4Y">API Key（仅选 API-Football 时填写）</label>
+      <input type="text" id="setKey" placeholder="粘贴你的 API-Football key" data-page-node-id="VjOQjFIL5aYDp3hd4AgVgC">
     </div>
-    <div class="hint">
-      <b>ESPN 真实赛程（默认·免注册）</b>：直接拉取<b>当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛），自动出赛果，彻底解决“不是今天比赛”的问题。无需账号、浏览器可跨域调用。<br>
-      <b>盘口说明</b>：ESPN 提供的是赛程而非 Bet365 盘口，所以盘口目前仍显示<b>示例盘口（标注“示例”）</b>；要真实 36*(Bet365) 亚盘/大小球需付费赔率接口（如 API-Football 付费档），到时我再接。<br>
-      <b>韩K / 欧协联</b>：ESPN 免费接口不提供这两项，仅演示模式可见；真实模式若选它们会提示无数据。<br>
-      若手机/电脑离线或接口异常，会自动回退示例数据。<br>
-      页面顶部「<b>联赛</b>」下拉可筛选指定联赛或预设（<b>竞彩常用</b> / <b>国家队</b>），选「全部联赛」显示所有比赛。筛选在真实赛程与示例数据下均生效。
+    <div class="hint" data-page-node-id="302BbeJLMC9AZX0oFExZ30">
+      <b data-page-node-id="EGt5YZeVDjEnLKictmPRQ9">ESPN 真实赛程（默认·免注册）</b>：直接拉取<b data-page-node-id="twuX4v9GQaq0WrKVZcncvL">当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛），自动出赛果，彻底解决“不是今天比赛”的问题。无需账号、浏览器可跨域调用。<br data-page-node-id="jG4NHg9hUkngQnrqdyfYVP">
+      <b data-page-node-id="3aDWRZfSF65rXWQHffLBx2">盘口说明</b>：ESPN 提供的是赛程而非 Bet365 盘口，所以盘口目前仍显示<b data-page-node-id="Ce45SWD8sk4yHdoNJUxZkU">示例盘口（标注“示例”）</b>；要真实 36*(Bet365) 亚盘/大小球需付费赔率接口（如 API-Football 付费档），到时我再接。<br data-page-node-id="Q0o2yjNiaZstEptCQrDH9l">
+      <b data-page-node-id="m3KjUjXaSQWM23ABOv36hi">韩K / 欧协联</b>：ESPN 免费接口不提供这两项，仅演示模式可见；真实模式若选它们会提示无数据。<br data-page-node-id="Jq1fs4A8bSVbEwBzUVcd9q">
+      若手机/电脑离线或接口异常，会自动回退示例数据。<br data-page-node-id="TVFZhh7mqeP5UXveTm2fyc">
+      页面顶部「<b data-page-node-id="7zFXpcoQvn4vs5Y0bJGK8r">联赛</b>」下拉可筛选指定联赛或预设（<b data-page-node-id="C0BHvByhGgvcq3K0ZkZJA9">竞彩常用</b> / <b data-page-node-id="Jj1m0Ec6Thy5IAYS4itis0">国家队</b>），选「全部联赛」显示所有比赛。筛选在真实赛程与示例数据下均生效。
     </div>
-    <div class="actions">
-      <button class="btn ghost" id="btnCancel">取消</button>
-      <button class="btn primary" id="btnSave">保存</button>
+    <div class="actions" data-page-node-id="0mo3FzhrqQQYMi3JrLdPgk">
+      <button class="btn ghost" id="btnCancel" data-page-node-id="rohp2OAF5uPLuDg5xLkHpP">取消</button>
+      <button class="btn primary" id="btnSave" data-page-node-id="tOPZD3dgE596C9rUtyfG4b">保存</button>
     </div>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" data-page-node-id="b3XYryTKNbeRUdW1FU31eS"></div>
 
 <script>
 "use strict";
@@ -694,20 +694,26 @@ function renderMatches(){
     </div>`;
   }).join('');
 
-  // 绑定预测输入
-  wrap.querySelectorAll('.pred-input').forEach(inp=>inp.oninput=()=>{
-    const all=loadPred(); const arr=all[inp.dataset.id]||['','',''];
-    while(arr.length<3) arr.push('');
-    arr[+inp.dataset.s]=inp.value.trim();
-    all[inp.dataset.id]=arr;
-    savePred(all); renderMatches();
+  // 绑定预测输入：输入时只保存，不重渲染（否则每次按键重建 DOM、焦点丢失、输入法关闭）
+  wrap.querySelectorAll('.pred-input').forEach(inp=>{
+    inp.oninput=()=>{
+      const all=loadPred(); const arr=all[inp.dataset.id]||['','',''];
+      while(arr.length<3) arr.push('');
+      arr[+inp.dataset.s]=inp.value.trim();
+      all[inp.dataset.id]=arr;
+      savePred(all);
+    };
+    inp.onchange=()=>renderMatches(); // 失焦后再刷新核对
   });
   // 绑定实际比分
-  wrap.querySelectorAll('.res-input').forEach(inp=>inp.oninput=()=>{
-    const all=loadRes();
-    const v=inp.value.trim();
-    if(v==='') delete all[inp.dataset.id]; else all[inp.dataset.id]=v;
-    saveRes(all); renderMatches();
+  wrap.querySelectorAll('.res-input').forEach(inp=>{
+    inp.oninput=()=>{
+      const all=loadRes();
+      const v=inp.value.trim();
+      if(v==='') delete all[inp.dataset.id]; else all[inp.dataset.id]=v;
+      saveRes(all);
+    };
+    inp.onchange=()=>renderMatches();
   });
 }
 
