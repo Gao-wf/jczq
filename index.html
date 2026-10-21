@@ -77,6 +77,22 @@
   .pc{font-size:12px;font-weight:700;padding:3px 8px;border-radius:8px;background:#f4f6fa;color:var(--sub)}
   .pc.hit{background:#fdeaea;color:var(--red)} .pc.miss{background:#e9f7ef;color:var(--green)}
 
+  /* 折叠比赛列表 */
+  .mrow{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:10px;box-shadow:var(--shadow);overflow:hidden}
+  .m-head{display:flex;align-items:center;gap:9px;padding:11px 13px;cursor:pointer;user-select:none;-webkit-user-select:none;flex-wrap:wrap}
+  .m-head:active{background:#f7f9fc}
+  .mrow .caret{flex:none;color:var(--sub);font-size:10px;transition:transform .18s;width:10px}
+  .mrow.open .caret{transform:rotate(90deg)}
+  .m-time2{font-weight:800;font-size:14px;min-width:42px}
+  .m-teams2{flex:1;min-width:130px;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .m-teams2 .vs2{color:var(--gray);font-size:11px;margin:0 5px;font-weight:600}
+  .m-league2{flex:none;font-size:11px;background:#f0f3f8;color:var(--sub);padding:2px 7px;border-radius:6px;font-weight:700}
+  .m-brief{flex:none;font-size:13px;font-weight:800;color:var(--blue);min-width:40px;text-align:right}
+  .m-detail{display:none;border-top:1px dashed var(--line);padding:12px 13px 13px}
+  .mrow.open .m-detail{display:block}
+  .expand-bar{display:flex;gap:8px;margin:0 0 10px}
+  .expand-bar .qbtn{padding:5px 10px;font-size:12px}
+
   .legend{font-size:11px;color:var(--sub);margin-top:8px;line-height:1.7}
   .empty{text-align:center;color:var(--sub);padding:30px;font-size:13px}
 
@@ -130,17 +146,22 @@
   <div class="stats" id="stats" data-page-node-id="sQuiJSRRyFGN8JFAv01nDN"></div>
   <div class="predbar" id="predBar" data-page-node-id="rHbJZk5dm1fz3kGwx4BDwa"></div>
 
+  <div class="expand-bar" data-page-node-id="EXPBTN001">
+    <button class="qbtn" id="btnExpandAll" data-page-node-id="EXPBTN002">全部展开</button>
+    <button class="qbtn" id="btnCollapseAll" data-page-node-id="EXPBTN003">全部收起</button>
+  </div>
+
   <div id="matchList" data-page-node-id="CkJoEvS8B0gJ4HAx8lBvY4"></div>
 
   <footer data-page-node-id="kzWrv5F58hwwXAZ8FwpAW9">
-    比赛：默认接 <b data-page-node-id="KHwXpW4vxEWSQFlVFkVklL">ESPN 真实赛程</b>（无需注册、浏览器可跨域），显示<b data-page-node-id="xsQD5zX6x88TAoJARfhenZ">当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛）。<br data-page-node-id="zPDkcz7bBF03g9MCFuRtwB">
-    注意：ESPN 免费接口<b data-page-node-id="JVlmFkhXj9CjcRBIhwvlU5">不提供「韩K」「欧协联」</b>，这两项仅在示例/演示模式下可见；真实模式选它们会提示无数据（后续接其他源再补）。<br data-page-node-id="C35ALsevDAATqm2DPErE7T">
+    比赛：默认接 <b data-page-node-id="KHwXpW4vxEWSQFlVFkVklL">ESPN 真实赛程</b>（无需注册、浏览器可跨域），显示<b data-page-node-id="xsQD5zX6x88TAoJARfhenZ">当天真实足球比赛</b>（五大联赛：英超/西甲/意甲/德甲/法甲 + 欧洲杯赛：欧冠/欧联 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛）。<br data-page-node-id="zPDkcz7bBF03g9MCFuRtwB">
+    注意：ESPN 免费接口<b data-page-node-id="JVlmFkhXj9CjcRBIhwvlU5">不提供「欧协联」</b>，该项仅在示例/演示模式下可见；真实模式选它会提示无数据（后续接其他源再补）。<br data-page-node-id="C35ALsevDAATqm2DPErE7T">
     盘口：当前为<b data-page-node-id="HZzcgvcZOHQsWxDq6CNyT4">示例盘口（标注“示例”）</b>；真实 Bet365（36*）亚盘/大小球需付费赔率接口，到时再接。<br data-page-node-id="FtC8LXBadNCpgKglS9JtPU">
-    每张比赛卡下方有 <b data-page-node-id="ry2wQviPPGfDQVPBepzQF4">3 个预测比分框</b>（可留空）和 <b data-page-node-id="pAyWB8xkwyXFLLzR9YOmGr">实际比分框</b>：第二天把真实结果填进「实际比分」，网页自动核对 3 个预测是否命中。<br data-page-node-id="cEP9qvpjG1vbF0UiwldauD">
+    比赛为<b data-page-node-id="ry2wQviPPGfDQVPBepzQF4">折叠列表</b>：每场一行摘要（时间/对阵/状态/比分），<b data-page-node-id="pAyWB8xkwyXFLLzR9YOmGr">点一下展开详情</b>，里面有 36* 盘口、盘路结果和 <b data-page-node-id="pzInput01">3 个预测比分框 + 实际比分框</b>：第二天把真实结果填进「实际比分」，网页自动核对 3 个预测是否命中。全部按开赛时间从早到晚排序。<br data-page-node-id="cEP9qvpjG1vbF0UiwldauD">
     盘路颜色：<span style="color:var(--red);font-weight:700" data-page-node-id="l0Q6c9ILETSB7SF10VXfIK">红=赢盘</span> /
     <span style="color:var(--green);font-weight:700" data-page-node-id="z007FFroamrS8euDrUPIal">绿=输盘</span> /
     <span style="color:var(--gray);font-weight:700" data-page-node-id="XkBxGTEilNsyMhhpZbocnw">灰=走盘</span>（含赢半/输半）。<br data-page-node-id="VECYKYAknHpmsvzQoIjehg">
-    在「⚙ 数据源」可切换 ESPN / 示例 / API-Football；顶部「联赛」下拉可筛选，含「竞彩常用」「国家队」预设。
+    在「⚙ 数据源」可切换 ESPN / 示例 / API-Football；顶部「联赛」下拉可筛选（全部/五大联赛/欧洲杯赛/国家队/单个联赛），选择会记住。
   </footer>
 </div>
 
@@ -161,11 +182,11 @@
       <input type="text" id="setKey" placeholder="粘贴你的 API-Football key" data-page-node-id="VjOQjFIL5aYDp3hd4AgVgC">
     </div>
     <div class="hint" data-page-node-id="302BbeJLMC9AZX0oFExZ30">
-      <b data-page-node-id="EGt5YZeVDjEnLKictmPRQ9">ESPN 真实赛程（默认·免注册）</b>：直接拉取<b data-page-node-id="twuX4v9GQaq0WrKVZcncvL">当天真实足球比赛</b>（英超/西甲/意甲/德甲/法甲/荷甲/葡超/英冠/比甲/欧冠/欧联/日职/中超 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛），自动出赛果，彻底解决“不是今天比赛”的问题。无需账号、浏览器可跨域调用。<br data-page-node-id="jG4NHg9hUkngQnrqdyfYVP">
+      <b data-page-node-id="EGt5YZeVDjEnLKictmPRQ9">ESPN 真实赛程（默认·免注册）</b>：直接拉取<b data-page-node-id="twuX4v9GQaq0WrKVZcncvL">当天真实足球比赛</b>（五大联赛：英超/西甲/意甲/德甲/法甲 + 欧冠/欧联 + 国家队：欧国联/世界杯/欧洲杯/国际友谊赛），自动出赛果。无需账号、浏览器可跨域调用。<br data-page-node-id="jG4NHg9hUkngQnrqdyfYVP">
       <b data-page-node-id="3aDWRZfSF65rXWQHffLBx2">盘口说明</b>：ESPN 提供的是赛程而非 Bet365 盘口，所以盘口目前仍显示<b data-page-node-id="Ce45SWD8sk4yHdoNJUxZkU">示例盘口（标注“示例”）</b>；要真实 36*(Bet365) 亚盘/大小球需付费赔率接口（如 API-Football 付费档），到时我再接。<br data-page-node-id="Q0o2yjNiaZstEptCQrDH9l">
-      <b data-page-node-id="m3KjUjXaSQWM23ABOv36hi">韩K / 欧协联</b>：ESPN 免费接口不提供这两项，仅演示模式可见；真实模式若选它们会提示无数据。<br data-page-node-id="Jq1fs4A8bSVbEwBzUVcd9q">
+      <b data-page-node-id="m3KjUjXaSQWM23ABOv36hi">欧协联</b>：ESPN 免费接口暂不提供，仅演示模式可见；真实模式若选它会提示无数据。<br data-page-node-id="Jq1fs4A8bSVbEwBzUVcd9q">
       若手机/电脑离线或接口异常，会自动回退示例数据。<br data-page-node-id="TVFZhh7mqeP5UXveTm2fyc">
-      页面顶部「<b data-page-node-id="7zFXpcoQvn4vs5Y0bJGK8r">联赛</b>」下拉可筛选指定联赛或预设（<b data-page-node-id="C0BHvByhGgvcq3K0ZkZJA9">竞彩常用</b> / <b data-page-node-id="Jj1m0Ec6Thy5IAYS4itis0">国家队</b>），选「全部联赛」显示所有比赛。筛选在真实赛程与示例数据下均生效。
+      比赛为<b data-page-node-id="7zFXpcoQvn4vs5Y0bJGK8r">折叠列表</b>：点任意一场展开详情（盘口/盘路/预测输入）；页面顶部「<b data-page-node-id="C0BHvByhGgvcq3K0ZkZJA9">联赛</b>」下拉可筛选（全部/五大联赛/欧洲杯赛/国家队/单个联赛），选「全部联赛」显示所有比赛。筛选在真实赛程与示例数据下均生效。
     </div>
     <div class="actions" data-page-node-id="0mo3FzhrqQQYMi3JrLdPgk">
       <button class="btn ghost" id="btnCancel" data-page-node-id="rohp2OAF5uPLuDg5xLkHpP">取消</button>
@@ -316,43 +337,34 @@ function clubZh(name){
   return CLUB_ZH[name.trim().toLowerCase()]||name; // 否则查表，未覆盖保留原样
 }
 const TEAMS={
- '英超':['曼联','曼城','阿森纳','利物浦','切尔西','热刺','纽卡','维拉','布莱顿','西汉姆'],
- '西甲':['皇马','巴萨','马竞','塞维利亚','比利亚雷','毕尔巴','瓦伦西亚','赫罗纳','皇家社会','贝蒂斯'],
- '意甲':['国米','米兰','尤文','那不勒斯','罗马','拉齐奥','亚特兰大','佛罗伦萨','都灵','博洛尼亚'],
- '德甲':['拜仁','多特','勒沃库森','莱比锡','法兰克福','柏林联合','弗赖堡','门兴','沃尔夫斯','斯图加特'],
- '法甲':['巴黎','马赛','摩纳哥','里昂','里尔','雷恩','尼斯','朗斯','布雷斯特','南特'],
- '葡超':['波尔图','本菲卡','里斯本','布拉加','吉马良斯','法马利康','博阿维斯塔','埃斯托里尔','维兹拉','阿罗卡'],
- '荷甲':['阿贾克斯','PSV','费耶诺德','阿尔克马尔','特温特','乌德勒支','海伦芬','格罗宁根','鹿特丹','前进之鹰'],
- '英冠':['利兹联','莱斯特','南安普顿','西布朗','诺维奇','米德尔斯堡','考文垂','谢菲联','沃特福德','布莱克本'],
- '比甲':['布鲁日','根特','圣吉罗斯','安特卫普','亨克','标准列日','安德莱赫特','梅赫伦','韦斯特洛','色格拉'],
- '中超':['上海海港','上海申花','北京国安','山东泰山','成都蓉城','武汉三镇','浙江队','天津津门','河南队','沧州雄狮'],
- '日职':['横滨水手','川崎前锋','鹿岛鹿角','浦和红钻','大阪钢巴','名古屋','广岛三箭','神户胜利','FC东京','柏太阳神'],
- '韩K':['全北现代','蔚山现代','首尔FC','水原三星','大田市民','江原FC','金泉尚武','浦项制铁','仁川联','光州FC'],
- '欧冠':['曼城','皇马','拜仁','巴黎','国米','巴萨','阿森纳','多特','马竞','勒沃库森'],
- '欧联':['罗马','勒沃库森','亚特兰大','比利亚雷','贝蒂斯','阿贾克斯','葡萄牙体育','格拉斯哥','卡拉巴赫','罗马尼亚'],
- '欧协联':['佛罗伦萨','西汉姆','阿斯顿维拉','里斯本','布拉格','根特','巴塞尔','莫尔德','乔治罗尼亚','卢加诺'],
- '美职':['洛杉矶FC','迈阿密','西雅图','亚特兰大联','纽约红牛','费城','盐湖城','多伦多','达拉斯','波特兰'],
- // 国家队（演示用队名；真实数据由 ESPN 国家队赛事接入）
- '欧国联':COUNTRIES,'世界杯':COUNTRIES,'欧洲杯':COUNTRIES,'国际友谊赛':COUNTRIES,
+  '英超':['曼联','曼城','阿森纳','利物浦','切尔西','热刺','纽卡','维拉','布莱顿','西汉姆'],
+  '西甲':['皇马','巴萨','马竞','塞维利亚','比利亚雷','毕尔巴','瓦伦西亚','赫罗纳','皇家社会','贝蒂斯'],
+  '意甲':['国米','米兰','尤文','那不勒斯','罗马','拉齐奥','亚特兰大','佛罗伦萨','都灵','博洛尼亚'],
+  '德甲':['拜仁','多特','勒沃库森','莱比锡','法兰克福','柏林联合','弗赖堡','门兴','沃尔夫斯','斯图加特'],
+  '法甲':['巴黎','马赛','摩纳哥','里昂','里尔','雷恩','尼斯','朗斯','布雷斯特','南特'],
+  '欧冠':['曼城','皇马','拜仁','巴黎','国米','巴萨','阿森纳','多特','马竞','勒沃库森'],
+  '欧联':['罗马','勒沃库森','亚特兰大','比利亚雷','贝蒂斯','阿贾克斯','葡萄牙体育','格拉斯哥','卡拉巴赫','费内巴切'],
+  '欧协联':['佛罗伦萨','西汉姆','阿斯顿维拉','里斯本','布拉格','根特','巴塞尔','莫尔德','乔治罗尼亚','卢加诺'],
+  // 国家队（演示用队名；真实数据由 ESPN 国家队赛事接入）
+  '欧国联':COUNTRIES,'世界杯':COUNTRIES,'欧洲杯':COUNTRIES,'国际友谊赛':COUNTRIES,
 };
 const LEAGUE_KEYS=Object.keys(TEAMS);
-// 竞彩常用（俱乐部联赛预设）
-const JCZQ_LEAGUES=['英超','西甲','意甲','德甲','法甲','葡超','荷甲','英冠','比甲','欧冠','欧联','欧协联','日职','韩K','中超'];
+// 预设分组
+const TOP5_LEAGUES=['英超','西甲','意甲','德甲','法甲'];
+const EURO_LEAGUES=['欧冠','欧联','欧协联'];
 // 国家队赛事预设
 const NT_LEAGUES=['欧国联','世界杯','欧洲杯','国际友谊赛'];
 // ESPN 真实赛程抓取源（按联赛拉，leagueId 统一用中文名，与示例/筛选一致）
-// 注：ESPN 免费接口不提供「韩K」「欧协联」——这两项仅演示模式可见；真实模式若选它们会提示无数据。
+// 注：ESPN 免费接口不提供「欧协联」——该项仅演示模式可见；真实模式若选它会提示无数据。
 const LEAGUE_SOURCES=[
   {code:'eng.1',zh:'英超'},{code:'esp.1',zh:'西甲'},{code:'ita.1',zh:'意甲'},
-  {code:'ger.1',zh:'德甲'},{code:'fra.1',zh:'法甲'},{code:'por.1',zh:'葡超'},
-  {code:'ned.1',zh:'荷甲'},{code:'eng.2',zh:'英冠'},{code:'bel.1',zh:'比甲'},
-  {code:'uefa.champions',zh:'欧冠'},{code:'uefa.europa',zh:'欧联'},
-  {code:'jpn.1',zh:'日职'},{code:'chn.1',zh:'中超'},
+  {code:'ger.1',zh:'德甲'},{code:'fra.1',zh:'法甲'},
+  {code:'uefa.champions',zh:'欧冠'},{code:'uefa.europa',zh:'欧联'},{code:'uefa.conference',zh:'欧协联'},
   {code:'uefa.nations',zh:'欧国联'},{code:'fifa.world',zh:'世界杯'},
   {code:'uefa.euro',zh:'欧洲杯'},{code:'fifa.friendly',zh:'国际友谊赛'},
 ];
-// 筛选条固定主列表（始终显示，含 ESPN 未覆盖的韩K/欧协联，便于用户选择/演示）
-const MASTER_LEAGUES=['英超','西甲','意甲','德甲','法甲','葡超','荷甲','英冠','比甲','欧冠','欧联','欧协联','日职','韩K','中超','欧国联','世界杯','欧洲杯','国际友谊赛'];
+// 筛选下拉固定主列表（五大联赛 + 欧洲杯赛 + 国家队）
+const MASTER_LEAGUES=['英超','西甲','意甲','德甲','法甲','欧冠','欧联','欧协联','欧国联','世界杯','欧洲杯','国际友谊赛'];
 const HANDI_POOL=[-1.5,-1.25,-1,-0.75,-0.5,-0.25,0,0.25,0.5,0.75,1,1.25,1.5];
 const OU_POOL=[1.75,2,2.25,2.5,2.75,3,3.25,3.5];
 
@@ -605,6 +617,22 @@ function ouCell(label,line,over,under,cls){
   </div>`;
 }
 
+/* 展开状态持久化（哪些场次处于展开态） */
+const LS_OPEN='jczq_open_v1';
+let OPEN_IDS=new Set((()=>{try{return JSON.parse(localStorage.getItem(LS_OPEN))||[];}catch(e){return [];}})());
+function saveOpen(){ localStorage.setItem(LS_OPEN,JSON.stringify([...OPEN_IDS])); }
+function toggleOpen(row){
+  const id=row.dataset.id;
+  if(OPEN_IDS.has(id)){ OPEN_IDS.delete(id); row.classList.remove('open'); }
+  else { OPEN_IDS.add(id); row.classList.add('open'); }
+  saveOpen();
+}
+function setAllOpen(on){
+  if(on) CUR_MATCHES.forEach(m=>OPEN_IDS.add(m.id));
+  else OPEN_IDS.clear();
+  saveOpen(); renderMatches();
+}
+
 function renderMatches(){
   const wrap=document.getElementById('matchList');
   if(!CUR_MATCHES.length){ wrap.innerHTML='<div class="empty">当天暂无真实赛程，已显示示例数据。<br>想看真实比赛？在上方「日期」选择器挑一个有比赛的日子（如 <b>2025-09-13</b> 英超有 8 场）。</div>'; return; }
@@ -666,34 +694,45 @@ function renderMatches(){
 
     const predInputs = preds.map((p,i)=>`<input class="pred-input" data-id="${m.id}" data-s="${i}" value="${p}" placeholder="${i+1}" maxlength="5">`).join('');
 
-    return `<div class="match">
-      <div class="m-top">
-        <span class="m-league">${m.league}</span>
-        <span class="m-time">${m.time}</span>
+    // 摘要行右侧简要比分/盘口
+    const brief = sc ? effStr : `盘 ${fmtHandi(m.ahInitial.handi)}`;
+
+    return `<div class="mrow ${OPEN_IDS.has(m.id)?'open':''}" data-id="${m.id}">
+      <div class="m-head">
+        <span class="caret">▶</span>
+        <span class="m-time2">${m.time}</span>
+        <span class="m-teams2">${m.home}<span class="vs2">VS</span>${m.away}</span>
+        <span class="m-league2">${m.league}</span>
         ${statusBadge(m.status)}
+        <span class="m-brief">${brief}</span>
       </div>
-      <div class="m-teams">${m.home}<span class="vs">VS</span>${m.away}</div>
-      <div class="odds-block">
-        <div class="ob-title">36* 亚盘 <span class="src">Bet365</span></div>
-        <div class="ob-grid">${ahHtml}</div>
-      </div>
-      <div class="odds-block">
-        <div class="ob-title">36* 大小球 <span class="src">Bet365</span></div>
-        <div class="ob-grid">${ouHtml}</div>
-      </div>
-      ${resultHtml}
-      <div class="predict-block">
-        <div class="ob-title">我的预测（3 个比分，可留空）</div>
-        <div class="pred-inline">${predInputs}</div>
-        <div class="res-input-row">
-          <label>实际比分</label>
-          <input class="res-input" data-id="${m.id}" value="${effStr||''}" placeholder="x-y" maxlength="5">
-          <span class="checks">${checks}</span>
+      <div class="m-detail">
+        <div class="odds-block">
+          <div class="ob-title">36* 亚盘 <span class="src">Bet365</span></div>
+          <div class="ob-grid">${ahHtml}</div>
+        </div>
+        <div class="odds-block">
+          <div class="ob-title">36* 大小球 <span class="src">Bet365</span></div>
+          <div class="ob-grid">${ouHtml}</div>
+        </div>
+        ${resultHtml}
+        <div class="predict-block">
+          <div class="ob-title">我的预测（3 个比分，可留空）</div>
+          <div class="pred-inline">${predInputs}</div>
+          <div class="res-input-row">
+            <label>实际比分</label>
+            <input class="res-input" data-id="${m.id}" value="${effStr||''}" placeholder="x-y" maxlength="5">
+            <span class="checks">${checks}</span>
+          </div>
         </div>
       </div>
     </div>`;
   }).join('');
 
+  // 绑定折叠展开
+  wrap.querySelectorAll('.mrow').forEach(row=>{
+    row.querySelector('.m-head').onclick=()=>toggleOpen(row);
+  });
   // 绑定预测输入：输入时只保存，不重渲染（否则每次按键重建 DOM、焦点丢失、输入法关闭）
   wrap.querySelectorAll('.pred-input').forEach(inp=>{
     inp.oninput=()=>{
@@ -754,13 +793,12 @@ function renderStats(){
   });
   document.getElementById('predBar').innerHTML = filled
     ? `我的预测：共填 <b>${filled}</b> 个比分 · 已开奖 <b>${hasRes}</b> · 命中 <b>${hit}</b> · 未中 ${miss} · 待开奖 ${pend}`
-    : '还没填预测。在每张比赛卡下方填入你预测的比分（最多 3 个，可留空），第二天把真实结果填进「实际比分」即可自动核对。';
+    : '还没填预测。点开任意一场比赛，在详情里填入你预测的比分（最多 3 个，可留空），第二天把真实结果填进「实际比分」即可自动核对。';
 }
 
 /* =========================================================
- *  联赛筛选（多选标签 + 竞彩常用预设）
+ *  联赛筛选（下拉：预设 + 单联赛）
  * ========================================================= */
-function jczqIds(leagues){ return leagues.filter(l=>JCZQ_LEAGUES.includes(l.zh)).map(l=>l.id); }
 function effectiveSel(leagues){
   if(LEAGUE_SEL===null) return new Set(leagues.map(l=>l.id));
   return new Set(LEAGUE_SEL.filter(id=>leagues.some(l=>l.id===id)));
@@ -772,17 +810,19 @@ const ALL_LEAGUE_OBJS=MASTER_LEAGUES.map(zh=>({id:zh,zh}));
 // 下拉项 → 选中联赛集合
 function selToState(v){
   if(v==='all') return null;
-  if(v==='jczq') return jczqIds(ALL_LEAGUE_OBJS);
+  if(v==='top5') return TOP5_LEAGUES.slice();
+  if(v==='euro') return EURO_LEAGUES.slice();
   if(v==='nt') return NT_LEAGUES.slice();
   return [v];
 }
 // 选中联赛集合 → 下拉项（用于回显存储）
 function stateToSelValue(){
   if(LEAGUE_SEL===null) return 'all';
-  const jczq=jczqIds(ALL_LEAGUE_OBJS);
-  if(jczq.length && LEAGUE_SEL.length===jczq.length && jczq.every(id=>LEAGUE_SEL.includes(id))) return 'jczq';
-  if(LEAGUE_SEL.length===NT_LEAGUES.length && NT_LEAGUES.every(id=>LEAGUE_SEL.includes(id))) return 'nt';
-  if(LEAGUE_SEL.length===1) return LEAGUE_SEL[0];
+  const same=a=>a.length===LEAGUE_SEL.length && a.every(x=>LEAGUE_SEL.includes(x));
+  if(same(TOP5_LEAGUES)) return 'top5';
+  if(same(EURO_LEAGUES)) return 'euro';
+  if(same(NT_LEAGUES)) return 'nt';
+  if(LEAGUE_SEL.length===1 && MASTER_LEAGUES.includes(LEAGUE_SEL[0])) return LEAGUE_SEL[0];
   return 'all';
 }
 // 旧版多选存储兼容：非法组合（既非预设也非单联赛）归一为“全部”
@@ -795,7 +835,8 @@ function normalizeSel(){
 function buildLeagueSelect(){
   const sel=document.getElementById('leagueSel');
   let html='<option value="all">全部联赛</option>';
-  html+='<option value="jczq">竞彩常用</option>';
+  html+='<option value="top5">五大联赛</option>';
+  html+='<option value="euro">欧洲杯赛</option>';
   html+='<option value="nt">国家队</option>';
   html+='<optgroup label="按联赛筛选">';
   MASTER_LEAGUES.forEach(zh=>{ html+=`<option value="${zh}">${zh}</option>`; });
@@ -864,6 +905,8 @@ async function loadAndRender(){
 document.getElementById('datePick').onchange=e=>{ CUR_DATE=e.target.value; loadAndRender(); };
 document.querySelectorAll('.qbtn').forEach(b=>b.onclick=()=>{ CUR_DATE=shiftDate(fmtDate(new Date()),+b.dataset.d); loadAndRender(); });
 document.getElementById('btnRefresh').onclick=()=>loadAndRender();
+document.getElementById('btnExpandAll').onclick=()=>setAllOpen(true);
+document.getElementById('btnCollapseAll').onclick=()=>setAllOpen(false);
 
 const mask=document.getElementById('modalMask');
 document.getElementById('btnSettings').onclick=()=>{ const s=loadSet(); document.getElementById('setProvider').value=s.provider; document.getElementById('setKey').value=s.key||''; mask.classList.add('open'); };
